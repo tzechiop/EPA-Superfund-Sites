@@ -11,19 +11,31 @@ from bootstrap import bootstrap
 import numpy as np
 from scipy import stats
 
-maindir = r'C:\Users\thasegawa\Documents\68 NYC DEP Papers\05 Data\Newtown Creek\Bootstrap'
-fname = 'Book1.xlsx'
-sheetname = 'Sheet2'
+maindir = r'C:\Users\thasegawa\Documents\68 NYC DEP Papers\05 Data\Newtown Creek\Bootstrap_20161004'
+#fname = 'Book1.xlsx'
+#sheetname = 'Sheet2'
+fname = 'anova.analysis.csv'
 
 # Read main data file
 os.chdir(maindir)
-fulldat = pd.read_excel(fname, sheetname)
+#fulldat = pd.read_excel(fname, sheetname)
+fulldat = pd.read_csv(fname)
 
 #chem_cols = fulldat.columns.values[6:]
-chem_cols = ['TPAH16/TOC',
-             'TPAH17/TOC']
+#chem_cols = ['TPAH16/TOC',
+#             'TPAH17/TOC']
+#chem_cols = ['TPAH16']
+       
+chem_cols = ['TPAH16',
+             'TPCB',
+             'Copper',
+             'Lead',
+             'TOC.pct',
+             'BC.pct',
+             'Al.pct']
 
-filtcol = 'type'
+#filtcol = 'type'
+filtcol = 'Category'
 filt_list = fulldat[filtcol].unique()
 filt_list = [filt for filt in filt_list if type(filt) in [str, 'unicode']]
 filt_list = sorted(filt_list)
@@ -77,7 +89,7 @@ for chem in chem_cols:
                                     samplenum = 10000,
                                     percentile_list = [2.5, 97.5])
                                     
-        #percentile_dict['Chemical'] = chem
+        percentile_dict['Chemical'] = chem
         percentile_dict['Waterbody'] = filt
         percentile_dict['N'] = len(values.index)
         percentile_dict['Actual Mean'] = np.mean(values)
@@ -88,8 +100,8 @@ for chem in chem_cols:
         
         percentiles_all = percentiles_all.append(pd.DataFrame(percentile_dict, index = [0]), ignore_index = True)
 
-    percentiles_all = percentiles_all[col_list]
-    percentiles_all.to_excel('GW_Bootstrap_{0}_20161004.xlsx'.format(chem.replace('/','_')))
+percentiles_all = percentiles_all[col_list]
+percentiles_all.to_excel('GW_Bootstrap_All_20161011.xlsx')
 
 #==============================================================================
 # # Compile tables
